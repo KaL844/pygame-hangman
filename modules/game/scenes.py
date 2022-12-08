@@ -6,7 +6,7 @@ from components.label import Label
 from components.panel import Panel
 from components.scene import Scene, SceneManager
 from modules.game.logic import GameLogic
-from utils.enum_types import MouseEvent
+from utils.enum_types import AlignType, MouseEvent
 from utils.json_reader import JsonReader
 from utils.logger import Logger
 import utils.constants as constants
@@ -100,8 +100,7 @@ class GameScene(Scene):
 
         texts = self.logic.getAllChar().split("\n")
         for i, label in enumerate(texts):
-            # TODO: config
-            self.alphabetPanel.addChild(f"label{i}", Label(text=label, x = 0, y = i * 30))
+            self.alphabetPanel.addChild(f"label{i}", Label(text=label, x = 0, y = i * 30, align=AlignType.TOP_CENTER))
 
     def clear(self) -> None:
         self.isRunning = True
