@@ -1,0 +1,31 @@
+{
+    "titleLabel": {
+        "text": "WELCOME",
+        "posX": 250,
+        "posY": 5,
+        "align": "TOP_CENTER"
+    },
+
+    "answerLabel": {
+        "posX": 250,
+        "posY": 70,
+        "align": "TOP_CENTER"
+    },
+
+    "currentImg": {
+        "posX": 250,
+        "posY": 100,
+        "anchor": "TOP_CENTER"
+    },
+
+    "returnBtn": {
+        "text": "Return",
+        "posX": 160,
+        "posY": 230
+    },
+
+    "alphabetPanel": {
+        "posX": 100,
+        "posY": 350
+    }
+}
