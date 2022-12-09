@@ -1,31 +1,53 @@
 {
     "titleLabel": {
         "text": "WELCOME",
-        "posX": 250,
-        "posY": 5,
-        "align": "TOP_CENTER"
-    },
-
-    "answerLabel": {
-        "posX": 250,
-        "posY": 70,
-        "align": "TOP_CENTER"
-    },
-
-    "currentImg": {
-        "posX": 250,
-        "posY": 100,
+        "x": 250,
+        "y": 5,
         "anchor": "TOP_CENTER"
     },
 
-    "returnBtn": {
-        "text": "Return",
-        "posX": 160,
-        "posY": 230
+    "answerLabel": {
+        "x": 250,
+        "y": 70,
+        "anchor": "TOP_CENTER"
+    },
+
+    "currentImg": {
+        "x": 250,
+        "y": 100,
+        "anchor": "TOP_CENTER"
     },
 
     "alphabetPanel": {
-        "posX": 250,
-        "posY": 350
+        "x": 250,
+        "y": 350,
+        "width": 200,
+        "height": 100,
+        "anchor": "TOP_CENTER"
+    },
+
+    "endGamePanel": {
+        "x": 250,
+        "y": 250,
+        "width": 500,
+        "height": 500,
+        "anchor": "MID_CENTER",
+        "backgroundColor": [0, 0, 0, 200],
+        "isVisible": false,
+        "children": {
+            "returnBtn": {
+                "component": "Button",
+                "text": "Return",
+                "x": 250,
+                "y": 250,
+                "anchor": "MID_CENTER"
+            },
+            "messageLabel": {
+                "component": "Label",
+                "x": 250,
+                "y": 100,
+                "anchor": "MID_CENTER"
+            }
+        }
     }
 }

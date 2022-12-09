@@ -33,8 +33,10 @@ class GameScene(Scene):
         self.titleLabel: Label = Label(conf=self.conf["titleLabel"])
         self.answerLabel: Label = Label(conf=self.conf["answerLabel"])
         self.currentImg: Image = Image(conf=self.conf["currentImg"])
-        self.returnBtn: Button = Button(conf=self.conf["returnBtn"])
         self.alphabetPanel: Panel = Panel(conf=self.conf["alphabetPanel"])
+        self.endGamePanel: Panel = Panel(conf=self.conf["endGamePanel"])
+        self.returnBtn: Button = self.endGamePanel.getChild("returnBtn")
+        self.messageLabel: Label = self.endGamePanel.getChild("messageLabel")
         self.isRunning: bool = True
 
         self.init()
@@ -79,12 +81,12 @@ class GameScene(Scene):
         self.currentImg.draw(screen)
         
         self.alphabetPanel.draw(screen)
-
-        self.returnBtn.draw(screen)
+        self.endGamePanel.draw(screen)
 
     def endGame(self) -> None:
         self.isRunning = False
-        self.returnBtn.setVisible(True)
+        self.messageLabel.setText("Congratulation!!" if self.logic.isWon() else f"Your secret word is {self.logic.getSecretWord()}")
+        self.endGamePanel.setVisible(True)
 
     def onReturnClick(self) -> None:
         self.sceneMgr.clear()
@@ -100,12 +102,13 @@ class GameScene(Scene):
 
         texts = self.logic.getAllChar().split("\n")
         for i, label in enumerate(texts):
-            self.alphabetPanel.addChild(f"label{i}", Label(text=label, x = 0, y = i * 30, align=AlignType.TOP_CENTER))
+            self.alphabetPanel.addChild(f"lable{i}", Label({"x": self.alphabetPanel.width // 2, "y": i * 30, "text": label, "anchor": "TOP_CENTER"}))
 
     def clear(self) -> None:
         self.isRunning = True
-        self.returnBtn.setVisible(False)
         self.alphabetPanel.clear()
+        self.messageLabel.clearText()
+        self.endGamePanel.setVisible(False)
 
     @staticmethod
     def getInstance() -> "GameScene":

@@ -1,39 +1,58 @@
+from typing import TypedDict
 import pygame
-from components.component import Component
+from components.component import Component, ComponentType
+from utils.enum_types import AlignType
+from utils.transform import TransformUtils
 
+class PanelConf(TypedDict):
+    x: int; y: int
+    width: int; height: int
+    backgroundColor: tuple[int, int, int, int]
+    anchor: AlignType
+    isVisible: bool
+    children: dict
 
 class Panel(Component):
     DEFAULT_X = 0
     DEFAULT_Y = 0
+    DEFAULT_WIDTH = 0
+    DEFAULT_HEIGHT = 0
+    DEFAULT_BACKGROUND_COLOR = (0, 0, 0, 0)
+    DEFAULT_ANCHOR = AlignType.TOP_LEFT
+    DEFAULT_VISIBLE = True
 
-    def __init__(self, conf: dict = None, x: int = DEFAULT_X, y: int = DEFAULT_Y) -> None:
+    def __init__(self, conf: PanelConf) -> None:
         self.children: dict[str, Component] = {}
 
-        if (conf is not None):
-            self._initWithConf(conf)
-        else:
-            self._initWithParams(x, y)
+        super().__init__(conf["x"] if "x" in conf else Panel.DEFAULT_X, conf["y"] if "y" in conf else Panel.DEFAULT_Y, 
+            conf["isVisible"] if "isVisible" in conf else Panel.DEFAULT_VISIBLE)
+        if "children" in conf:
+            children: dict = conf["children"]
+            for childName, child in children.items():
+                self.addChild(childName, Component.getComponent(ComponentType[child["component"]], child))
+        self.width = conf["width"] if "width" in conf else Panel.DEFAULT_WIDTH
+        self.height = conf["height"] if "height" in conf else Panel.DEFAULT_HEIGHT
+        self.backgroundColor = conf["backgroundColor"] if "backgroundColor" in conf else Panel.DEFAULT_BACKGROUND_COLOR
+        self.anchor = AlignType[conf["anchor"]] if "anchor" in conf else Panel.DEFAULT_ANCHOR
 
-    def _initWithConf(self, conf: dict):
-        super().__init__(conf["posX"] if "posX" in conf else Panel.DEFAULT_X, conf["posY"] if "posY" in conf else Panel.DEFAULT_Y)
-
-    def _initWithParams(self, x: int, y: int) -> None:
-        super().__init__(x, y)
+        self.surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
 
     def draw(self, screen: pygame.surface.Surface) -> None:
+        if not self.isVisible: return 
+
+        self.surface.fill(self.backgroundColor)
+
         for child in self.children.values():
-            child.draw(screen)
+            child.draw(self.surface)
+
+        posX, posY = TransformUtils.alignAnchor(self.anchor, self.x, self.y, self.width, self.height)
+        screen.blit(self.surface, (posX, posY))
 
     def addChild(self, name: str, child: Component) -> None:
-        child.setPosition(child.x + self.x, child.y + self.y)
         self.children[name] = child
 
-    def setPosition(self, x: int, y: int) -> None:
-        dx = x - self.x
-        dy = y - self.y
-        for child in self.children.values():
-            child.setPosition(child.x + dx, child.y + dy)
-        return super().setPosition(x, y)
+    def getChild(self, name: str) -> Component:
+        if name in self.children: return self.children[name]
 
     def clear(self) -> None:
         self.children = {}

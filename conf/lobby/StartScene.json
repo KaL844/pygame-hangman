@@ -2,8 +2,8 @@
     "startBtn": {
         "width": 180,
         "height": 40,
-        "posX": 160,
-        "posY": 200,
+        "x": 160,
+        "y": 200,
         "text": "Start"
     }
 }

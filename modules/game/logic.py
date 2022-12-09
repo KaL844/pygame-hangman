@@ -49,7 +49,10 @@ class GameLogic:
 
     def isGameOver(self) -> bool:
         GameLogic.logger.info("GameLogic.isGameOver. answer={}".format(self.answer))
-        return self.guessCount > GameLogic.MAX_WRONG_GUESS or GameLogic.UNDEFINE_CHAR not in self.answer
+        return self.guessCount > GameLogic.MAX_WRONG_GUESS or self.isWon()
+
+    def isWon(self) -> bool:
+        return GameLogic.UNDEFINE_CHAR not in self.answer
 
     def getGuessCount(self) -> int:
         return self.guessCount
@@ -64,6 +67,9 @@ class GameLogic:
             else:
                 string += " "
         return string
+
+    def getSecretWord(self) -> str:
+        return self.secretWord
 
     def getInstance() -> "GameLogic":
         if GameLogic._instance is None:

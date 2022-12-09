@@ -1,3 +1,4 @@
+from typing import TypedDict
 import pygame
 from components.component import Component
 
@@ -6,6 +7,15 @@ from utils.transform import TransformUtils
 
 pygame.init()
 
+class LabelConf(TypedDict):
+    x: int; y: int
+    color: tuple[int, int, int]
+    font: pygame.font.Font
+    text: str
+    isSmooth: bool
+    anchor: AlignType
+    isVisible: bool
+
 class Label(Component):
     DEFAULT_TEXT = ""
     DEFAULT_COLOR = (255, 255, 255)
@@ -13,36 +23,23 @@ class Label(Component):
     DEFAULT_SMOOTH = True
     DEFAULT_X = 0
     DEFAULT_Y = 0
-    DEFAULT_ALIGN = AlignType.TOP_LEFT
+    DEFAULT_ANCHOR = AlignType.TOP_LEFT
+    DEFAULT_VISIBLE = True
 
-    def __init__(self, conf: dict = None, text: str = DEFAULT_TEXT, color: tuple[int, int, int] = DEFAULT_COLOR, 
-            font: pygame.font.Font = DEFAULT_FONT, x: int = DEFAULT_X, y: int = DEFAULT_Y, isSmooth: bool = DEFAULT_SMOOTH, 
-            align: AlignType = DEFAULT_ALIGN) -> None:
-
-        if conf is not None:
-            self._initWithConf(conf)
-        else:
-            self._initWithParams(text, color, x, y, isSmooth, align)
-
-        self.font = font
-
-    def _initWithConf(self, conf: dict) -> None:
-        super().__init__(conf["posX"] if "posX" in conf else Label.DEFAULT_X, conf["posY"] if "posY" in conf else Label.DEFAULT_Y)
+    def __init__(self, conf: LabelConf) -> None:
+        super().__init__(conf["x"] if "x" in conf else Label.DEFAULT_X, conf["y"] if "y" in conf else Label.DEFAULT_Y, 
+            conf["isVisible"] if "isVisible" in conf else Label.DEFAULT_VISIBLE)
         self.text = conf["text"] if "text" in conf else Label.DEFAULT_TEXT
         self.color = tuple(conf["color"]) if "color" in conf else Label.DEFAULT_COLOR
         self.isSmooth = conf["isSmooth"] if "isSmooth" in conf else Label.DEFAULT_SMOOTH
-        self.align = AlignType[conf["align"]] if "align" in conf else Label.DEFAULT_ALIGN
+        self.anchor = AlignType[conf["anchor"]] if "anchor" in conf else Label.DEFAULT_ANCHOR
+        self.font = Label.DEFAULT_FONT
 
-    def _initWithParams(self, text: str, color: tuple[int, int, int], x: int, y: int, isSmooth: bool, align: AlignType) -> None:
-        super().__init__(x, y)
-        self.text = text
-        self.color = color
-        self.isSmooth = isSmooth
-        self.align = align
+        self.font = self.font
 
     def draw(self, screen: pygame.surface.Surface) -> None:
         textImg = self.font.render(self.text, self.isSmooth, self.color)
-        posX, posY = TransformUtils.alignAnchor(self.align, self.x, self.y, textImg.get_size()[0], textImg.get_size()[1])
+        posX, posY = TransformUtils.alignAnchor(self.anchor, self.x, self.y, textImg.get_size()[0], textImg.get_size()[1])
         screen.blit(textImg, (posX, posY))
 
     def setText(self, text: str) -> None:
